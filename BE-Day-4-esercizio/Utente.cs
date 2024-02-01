@@ -73,7 +73,7 @@ namespace BE_Day_4_esercizio
             Password = Console.ReadLine();
             Console.WriteLine("Conferma password:");
             string confirmPassword = Console.ReadLine();
-            if (Username != null && Password == confirmPassword)
+            if (Username != null && Password != null && Password == confirmPassword)
             {
                 IsLoggedIn = true;
                 LastLoginTime = DateTime.Now;
