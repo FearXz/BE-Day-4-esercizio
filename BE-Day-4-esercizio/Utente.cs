@@ -22,6 +22,7 @@ namespace BE_Day_4_esercizio
 {
     internal static class Utente
     {
+
         public static string Username { get; set; }
         public static string Password { get; set; }
         public static bool IsLoggedIn { get; set; }
@@ -39,7 +40,8 @@ namespace BE_Day_4_esercizio
             Console.WriteLine("2.: Logout");
             Console.WriteLine("3.: Verifica ora e data di login");
             Console.WriteLine("4.: Lista degli accessi");
-            Console.WriteLine("5.: Esci");
+            Console.WriteLine("5.: Lista degli user");
+            Console.WriteLine("6.: Esci");
             Console.WriteLine("========================================\n");
             string scelta = Console.ReadLine();
             switch (scelta)
@@ -57,6 +59,9 @@ namespace BE_Day_4_esercizio
                     LoginList();
                     break;
                 case "5":
+                    UserListPrint();
+                    break;
+                case "6":
                     Console.WriteLine("Arrivederci!");
                     break;
                 default:
@@ -70,49 +75,59 @@ namespace BE_Day_4_esercizio
          * se non lo è lo registra e lo logga, se lo è controlla che la password inserita sia corretta e lo logga
          */
         public static void Login()
-        {   // Chiede all'utente di inserire username e password
-            Console.WriteLine("Inserisci username:");
-            string inputUsername = Console.ReadLine();
-            Console.WriteLine("Inserisci password:");
-            string inputPassword = Console.ReadLine();
-            Console.WriteLine("Conferma password:");
-            string confirmPassword = Console.ReadLine();
-
-            // Verifica che username e password non siano nulli e che la password sia uguale alla conferma password
-            if (inputUsername != null && inputPassword != null && inputPassword == confirmPassword)
+        {
+            if (IsLoggedIn == false)
             {
-                // Cerca l'utente nella lista
-                var user = UserList.Find(u => u.Item1 == inputUsername);
+                // Chiede all'utente di inserire username e password
+                Console.WriteLine("Inserisci username:");
+                string inputUsername = Console.ReadLine();
+                Console.WriteLine("Inserisci password:");
+                string inputPassword = Console.ReadLine();
+                Console.WriteLine("Conferma password:");
+                string confirmPassword = Console.ReadLine();
 
-                // Verifica se l'utente è già registrato
-                if (user.Item1 != null && user.Item2 != null)
+
+
+                // Verifica che username e password non siano nulli e che la password sia uguale alla conferma password
+                if (inputUsername != null && inputPassword != null && inputPassword == confirmPassword)
                 {
-                    /* 
-                     * Verifica che la password inserita sia corretta
-                     * e se la password è corretta logga l'utente
-                    */
-                    if (user.Item2 == inputPassword)
+                    // Cerca l'utente nella lista
+                    var user = UserList.Find(u => u.Item1 == inputUsername);
+
+                    // Verifica se l'utente è già registrato
+                    if (user.Item1 != null && user.Item2 != null)
                     {
-                        //Setta gli stati IsLoggedIn e Date
-                        SetLogin(inputUsername, inputPassword);
-                        Console.WriteLine("\nLogin effettuato con successo!");
+                        /* 
+                         * Verifica che la password inserita sia corretta
+                         * e se la password è corretta logga l'utente
+                        */
+                        if (user.Item2 == inputPassword)
+                        {
+                            //Setta gli stati IsLoggedIn e Date
+                            SetLogin(inputUsername, inputPassword);
+                            Console.WriteLine("\nLogin effettuato con successo!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nPassword errata!");
+                        }
                     }
+                    // Se l'utente non è registrato lo registra e lo logga
                     else
                     {
-                        Console.WriteLine("\nPassword errata!");
+                        UserList.Add((inputUsername, inputPassword));
+                        SetLogin(inputUsername, inputPassword);
+                        Console.WriteLine("\nUtente creato e login effettuato con successo!");
                     }
                 }
-                // Se l'utente non è registrato lo registra e lo logga
                 else
                 {
-                    UserList.Add((inputUsername, inputPassword));
-                    SetLogin(inputUsername, inputPassword);
-                    Console.WriteLine("\nUtente creato e login effettuato con successo!");
+                    Console.WriteLine("\nLogin fallito!");
                 }
             }
             else
             {
-                Console.WriteLine("\nLogin fallito!");
+                Console.WriteLine("Sei già loggato");
             }
             Menu();
         }
@@ -175,6 +190,25 @@ namespace BE_Day_4_esercizio
             else
             {
                 Console.WriteLine("\nNessun utente loggato!");
+            }
+            Menu();
+        }
+
+        // UserListPrint () Stampa la lista degli utenti
+        public static void UserListPrint()
+        {
+            if (UserList.Count != 0)
+            {
+                foreach (var item in UserList)
+                {
+                    Console.WriteLine($"\n{item.Item1}");
+                }
+                Menu();
+
+            }
+            else
+            {
+                Console.WriteLine("Nessun Utente Registrato");
             }
             Menu();
         }
